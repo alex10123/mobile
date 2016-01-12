@@ -1,0 +1,77 @@
+﻿<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/kendo/2014.1.318/kendo.web.min.js"></script>
+<link href="~/Content/kendo/2014.1.318/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.metro.min.css" rel="stylesheet" />
+<button onclick="logout()">Выйти</button>
+<div>
+    <h4>Тесты:</h4>
+</div>
+<div id="grid"></div>
+<div>
+    <h4>Добавление теста</h4>
+    <p>Название теста: <input type="text" id="newQuiz"></p>
+    <p><input type="button" value="Добавить тест" onclick=" addQuiz() "></p>
+</div>
+<script>
+    $(document).ready(function() {
+        $("#grid").kendoGrid({
+            dataSource: {
+                dataType: "jsonp",
+                transport: {
+                    read: "/Quiz/GetQuizes"
+                },
+                pageSize: 20
+            },
+            width: 400,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            columns: [
+                { field: "Title", title: "Текст вопроса" },
+                { command: { text: "Работать с тестом" }, title: " " }
+            ],
+            dataBound: onDataBound
+        });
+    });
+
+    function addQuiz() {
+        var text = $("#newQuiz").val();
+        $.ajax({
+            type: "POST",
+            url: "/Quiz/AddQuiz",
+            data: {
+                title: text
+            },
+            success: function() {
+                window.location.href = "/Quiz/";
+            }
+        });
+    }
+
+    function editItem(id) {
+        window.location.href = '/Quiz/EditQuiz?id='+id;
+    }
+
+    function onDataBound() {
+        var grid = $('#grid').data('kendoGrid');
+        $(grid.content.find('tr')).each(
+            function (i, item) {
+                $(item).find('a.k-button.k-grid-Работатьстестом').on('click', function () {
+                    editItem(grid.dataItem(item).Id);
+                });
+            });
+    }
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "/User/Logout",
+            success: function () {
+                window.location.href = "/User/Index";
+            }
+        });
+    }
+</script>

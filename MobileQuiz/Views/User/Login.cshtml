@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<script src="~/Scripts/kendo/2014.1.318/jquery.min.js"></script>
+<h1>Mobile Quizes</h1>
+    <form>
+        <p><label>Email:</label><input type="text" id="email" /></p>
+        <p><label>Пароль:</label><input type="password" id="password" /></p>
+        <input type="button" value="Войти" onclick=" login() "/>
+    </form>
+    <div id="wrong" style="display: none;">
+        Неверный пароль или имя пользователя
+    </div>
+    <a href="~/User/Register">Зарегистрироваться</a>
+    <script>
+        function login() {
+            var email = $('#email').val();
+            var password = $('#password').val();
+            $.ajax({
+                type: 'POST',
+                url: '/User/Login',
+                data: { email: email, password: password },
+                success: function (data) {
+                    if (data > 0) {
+                        if (data == 1) {
+                            window.location.href = '/Quiz/Index/';
+                        } else {
+                            window.location.href = '/Quiz/ListQuizes/';
+                        }
+                    } else {
+                        $('#wrong').show();
+                    }
+                }
+            });
+        }
+    </script>

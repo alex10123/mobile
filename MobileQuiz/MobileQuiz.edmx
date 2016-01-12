@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MobileQuizModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="MobileQuizModelStoreContainer">
+          <EntitySet Name="AnswerSet" EntityType="MobileQuizModel.Store.AnswerSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="QuestionSet" EntityType="MobileQuizModel.Store.QuestionSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="QuizSet" EntityType="MobileQuizModel.Store.QuizSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="TestSet" EntityType="MobileQuizModel.Store.TestSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserAnswerSet" EntityType="MobileQuizModel.Store.UserAnswerSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserSet" EntityType="MobileQuizModel.Store.UserSet" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_QuestionAnswer" Association="MobileQuizModel.Store.FK_QuestionAnswer">
+            <End Role="QuestionSet" EntitySet="QuestionSet" />
+            <End Role="AnswerSet" EntitySet="AnswerSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuizQuestion" Association="MobileQuizModel.Store.FK_QuizQuestion">
+            <End Role="QuizSet" EntitySet="QuizSet" />
+            <End Role="QuestionSet" EntitySet="QuestionSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TestQuiz" Association="MobileQuizModel.Store.FK_TestQuiz">
+            <End Role="QuizSet" EntitySet="QuizSet" />
+            <End Role="TestSet" EntitySet="TestSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TestUser" Association="MobileQuizModel.Store.FK_TestUser">
+            <End Role="UserSet" EntitySet="UserSet" />
+            <End Role="TestSet" EntitySet="TestSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswerAnswer" Association="MobileQuizModel.Store.FK_UserAnswerAnswer">
+            <End Role="AnswerSet" EntitySet="AnswerSet" />
+            <End Role="UserAnswerSet" EntitySet="UserAnswerSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswerTest" Association="MobileQuizModel.Store.FK_UserAnswerTest">
+            <End Role="TestSet" EntitySet="TestSet" />
+            <End Role="UserAnswerSet" EntitySet="UserAnswerSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="AnswerSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsRight" Type="bit" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QuestionSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="QuizId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QuizSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TestSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="User_Id" Type="int" Nullable="false" />
+          <Property Name="Quiz_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserAnswerSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Answer_Id" Type="int" Nullable="false" />
+          <Property Name="Test_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_QuestionAnswer">
+          <End Role="QuestionSet" Type="MobileQuizModel.Store.QuestionSet" Multiplicity="1" />
+          <End Role="AnswerSet" Type="MobileQuizModel.Store.AnswerSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AnswerSet">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuizQuestion">
+          <End Role="QuizSet" Type="MobileQuizModel.Store.QuizSet" Multiplicity="1" />
+          <End Role="QuestionSet" Type="MobileQuizModel.Store.QuestionSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionSet">
+              <PropertyRef Name="QuizId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TestQuiz">
+          <End Role="QuizSet" Type="MobileQuizModel.Store.QuizSet" Multiplicity="1" />
+          <End Role="TestSet" Type="MobileQuizModel.Store.TestSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestSet">
+              <PropertyRef Name="Quiz_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TestUser">
+          <End Role="UserSet" Type="MobileQuizModel.Store.UserSet" Multiplicity="1" />
+          <End Role="TestSet" Type="MobileQuizModel.Store.TestSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestSet">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswerAnswer">
+          <End Role="AnswerSet" Type="MobileQuizModel.Store.AnswerSet" Multiplicity="1" />
+          <End Role="UserAnswerSet" Type="MobileQuizModel.Store.UserAnswerSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AnswerSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAnswerSet">
+              <PropertyRef Name="Answer_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswerTest">
+          <End Role="TestSet" Type="MobileQuizModel.Store.TestSet" Multiplicity="1" />
+          <End Role="UserAnswerSet" Type="MobileQuizModel.Store.UserAnswerSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TestSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAnswerSet">
+              <PropertyRef Name="Test_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MobileQuizModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="MobileQuizEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="AnswerSets" EntityType="MobileQuizModel.AnswerSet" />
+          <EntitySet Name="QuestionSets" EntityType="MobileQuizModel.QuestionSet" />
+          <EntitySet Name="QuizSets" EntityType="MobileQuizModel.QuizSet" />
+          <EntitySet Name="TestSets" EntityType="MobileQuizModel.TestSet" />
+          <EntitySet Name="UserAnswerSets" EntityType="MobileQuizModel.UserAnswerSet" />
+          <EntitySet Name="UserSets" EntityType="MobileQuizModel.UserSet" />
+          <AssociationSet Name="FK_QuestionAnswer" Association="MobileQuizModel.FK_QuestionAnswer">
+            <End Role="QuestionSet" EntitySet="QuestionSets" />
+            <End Role="AnswerSet" EntitySet="AnswerSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswerAnswer" Association="MobileQuizModel.FK_UserAnswerAnswer">
+            <End Role="AnswerSet" EntitySet="AnswerSets" />
+            <End Role="UserAnswerSet" EntitySet="UserAnswerSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuizQuestion" Association="MobileQuizModel.FK_QuizQuestion">
+            <End Role="QuizSet" EntitySet="QuizSets" />
+            <End Role="QuestionSet" EntitySet="QuestionSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TestQuiz" Association="MobileQuizModel.FK_TestQuiz">
+            <End Role="QuizSet" EntitySet="QuizSets" />
+            <End Role="TestSet" EntitySet="TestSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TestUser" Association="MobileQuizModel.FK_TestUser">
+            <End Role="UserSet" EntitySet="UserSets" />
+            <End Role="TestSet" EntitySet="TestSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswerTest" Association="MobileQuizModel.FK_UserAnswerTest">
+            <End Role="TestSet" EntitySet="TestSets" />
+            <End Role="UserAnswerSet" EntitySet="UserAnswerSets" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="AnswerSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="IsRight" Type="Boolean" Nullable="false" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="QuestionSet" Relationship="MobileQuizModel.FK_QuestionAnswer" FromRole="AnswerSet" ToRole="QuestionSet" />
+          <NavigationProperty Name="UserAnswerSets" Relationship="MobileQuizModel.FK_UserAnswerAnswer" FromRole="AnswerSet" ToRole="UserAnswerSet" />
+        </EntityType>
+        <EntityType Name="QuestionSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="QuizId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AnswerSets" Relationship="MobileQuizModel.FK_QuestionAnswer" FromRole="QuestionSet" ToRole="AnswerSet" />
+          <NavigationProperty Name="QuizSet" Relationship="MobileQuizModel.FK_QuizQuestion" FromRole="QuestionSet" ToRole="QuizSet" />
+        </EntityType>
+        <EntityType Name="QuizSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="QuestionSets" Relationship="MobileQuizModel.FK_QuizQuestion" FromRole="QuizSet" ToRole="QuestionSet" />
+          <NavigationProperty Name="TestSets" Relationship="MobileQuizModel.FK_TestQuiz" FromRole="QuizSet" ToRole="TestSet" />
+        </EntityType>
+        <EntityType Name="TestSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="User_Id" Type="Int32" Nullable="false" />
+          <Property Name="Quiz_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="QuizSet" Relationship="MobileQuizModel.FK_TestQuiz" FromRole="TestSet" ToRole="QuizSet" />
+          <NavigationProperty Name="UserSet" Relationship="MobileQuizModel.FK_TestUser" FromRole="TestSet" ToRole="UserSet" />
+          <NavigationProperty Name="UserAnswerSets" Relationship="MobileQuizModel.FK_UserAnswerTest" FromRole="TestSet" ToRole="UserAnswerSet" />
+        </EntityType>
+        <EntityType Name="UserAnswerSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Answer_Id" Type="Int32" Nullable="false" />
+          <Property Name="Test_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AnswerSet" Relationship="MobileQuizModel.FK_UserAnswerAnswer" FromRole="UserAnswerSet" ToRole="AnswerSet" />
+          <NavigationProperty Name="TestSet" Relationship="MobileQuizModel.FK_UserAnswerTest" FromRole="UserAnswerSet" ToRole="TestSet" />
+        </EntityType>
+        <EntityType Name="UserSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="TestSets" Relationship="MobileQuizModel.FK_TestUser" FromRole="UserSet" ToRole="TestSet" />
+        </EntityType>
+        <Association Name="FK_QuestionAnswer">
+          <End Role="QuestionSet" Type="MobileQuizModel.QuestionSet" Multiplicity="1" />
+          <End Role="AnswerSet" Type="MobileQuizModel.AnswerSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AnswerSet">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswerAnswer">
+          <End Role="AnswerSet" Type="MobileQuizModel.AnswerSet" Multiplicity="1" />
+          <End Role="UserAnswerSet" Type="MobileQuizModel.UserAnswerSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AnswerSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAnswerSet">
+              <PropertyRef Name="Answer_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuizQuestion">
+          <End Role="QuizSet" Type="MobileQuizModel.QuizSet" Multiplicity="1" />
+          <End Role="QuestionSet" Type="MobileQuizModel.QuestionSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionSet">
+              <PropertyRef Name="QuizId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TestQuiz">
+          <End Role="QuizSet" Type="MobileQuizModel.QuizSet" Multiplicity="1" />
+          <End Role="TestSet" Type="MobileQuizModel.TestSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestSet">
+              <PropertyRef Name="Quiz_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TestUser">
+          <End Role="UserSet" Type="MobileQuizModel.UserSet" Multiplicity="1" />
+          <End Role="TestSet" Type="MobileQuizModel.TestSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestSet">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswerTest">
+          <End Role="TestSet" Type="MobileQuizModel.TestSet" Multiplicity="1" />
+          <End Role="UserAnswerSet" Type="MobileQuizModel.UserAnswerSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TestSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAnswerSet">
+              <PropertyRef Name="Test_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MobileQuizModelStoreContainer" CdmEntityContainer="MobileQuizEntities">
+          <EntitySetMapping Name="AnswerSets">
+            <EntityTypeMapping TypeName="MobileQuizModel.AnswerSet">
+              <MappingFragment StoreEntitySet="AnswerSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="IsRight" ColumnName="IsRight" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionSets">
+            <EntityTypeMapping TypeName="MobileQuizModel.QuestionSet">
+              <MappingFragment StoreEntitySet="QuestionSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuizSets">
+            <EntityTypeMapping TypeName="MobileQuizModel.QuizSet">
+              <MappingFragment StoreEntitySet="QuizSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TestSets">
+            <EntityTypeMapping TypeName="MobileQuizModel.TestSet">
+              <MappingFragment StoreEntitySet="TestSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="User_Id" ColumnName="User_Id" />
+                <ScalarProperty Name="Quiz_Id" ColumnName="Quiz_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserAnswerSets">
+            <EntityTypeMapping TypeName="MobileQuizModel.UserAnswerSet">
+              <MappingFragment StoreEntitySet="UserAnswerSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Answer_Id" ColumnName="Answer_Id" />
+                <ScalarProperty Name="Test_Id" ColumnName="Test_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserSets">
+            <EntityTypeMapping TypeName="MobileQuizModel.UserSet">
+              <MappingFragment StoreEntitySet="UserSet">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

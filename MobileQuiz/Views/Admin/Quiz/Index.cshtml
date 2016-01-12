@@ -1,0 +1,71 @@
+﻿@model MobileQuiz.Models.Quiz
+<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/kendo/2014.1.318/kendo.web.min.js"></script>
+<link href="~/Content/kendo/2014.1.318/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.metro.min.css" rel="stylesheet" />
+<button onclick="logout()">Выйти</button>
+<div>
+    <p><b>Тест: @Model.Title</b></p>
+    <h4>Вопросы:</h4>
+</div>
+<div id="grid"></div>
+<div>
+    <h4>Добавление вопроса</h4>
+    <p>Вопрос: <input type="text" id="newQuestion"></p>
+    <p><input type="button" value="Добавить вариант ответа" onclick=" addQuestion() "></p>
+</div>
+<script>
+    $(document).ready(function() {
+        $("#grid").kendoGrid({
+            dataSource: {
+                dataType: "jsonp",
+                transport: {
+                    read: "/Quiz/GetQuizQuestions?id=" + '@Model.Id'
+                },
+                pageSize: 20
+            },
+            width: 400,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            columns: [
+                { field: "Text", title: "Текст вопроса" },
+                { command: { text: "Работать с вопросом" }, title: " " }
+            ],
+            dataBound: onDataBound
+        });
+    });
+
+    function addQuestion() {
+        var text = $("#newQuestion").val();
+        var quizId = parseInt('@Model.Id');
+        $.ajax({
+            type: "POST",
+            url: "/Question/AddQuestion",
+            data: {
+                quizId: quizId,
+                text: text
+            },
+            success: function() {
+                window.location.href = "/Quiz/EditQuiz?id=" + '@Model.Id';
+            }
+        });
+    }
+
+    function editItem(id) {
+        window.location.href = '/Question/EditQuestion?id='+id;
+    }
+
+    function onDataBound() {
+        var grid = $('#grid').data('kendoGrid');
+        $(grid.content.find('tr')).each(
+            function (i, item) {
+                $(item).find('a.k-button.k-grid-Работатьсвопросом').on('click', function () {
+                    editItem(grid.dataItem(item).Id);
+                });
+            });
+    }
+</script>

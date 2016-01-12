@@ -1,0 +1,68 @@
+﻿@model MobileQuiz.Models.Question
+<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/kendo/2014.1.318/kendo.web.min.js"></script>
+<link href="~/Content/kendo/2014.1.318/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.metro.min.css" rel="stylesheet" />
+<button onclick="logout()">Выйти</button>
+<div>
+    <p><b>Вопрос: @Model.Text</b></p>
+    <h4>Варианты ответов:</h4>
+</div>
+<div id="grid"></div>
+<div>
+    <h4>Добавление ответа</h4>
+    <p>Вариант ответа: <input type="text" id="newAnswer"></p>
+    <p><input type="checkbox" id="isRight"/>Правильный ответ</p>
+    <p><input type="button" value="Добавить вариант ответа" onclick=" addAnswer() "></p>
+</div>
+<script>
+    $("#grid").kendoGrid({
+        dataSource: {
+            dataType: "jsonp",
+            transport: {
+                read: "/Question/GetQuestionAnswers?id=" + @Model.Id
+            },
+            pageSize: 20
+        },
+        width: 400,
+        pageable: {
+            refresh: true,
+            pageSizes: true,
+            buttonCount: 5
+        },
+        columns: [
+            { field: "Text", title: "Текст вопроса" },
+            { field: "IsRight", title: "Правильный" },
+            { command: { text: "Отметить как правильный" }, title: " " }
+        ]
+    });
+
+    function addAnswer() {
+        var text = $("#newAnswer").val();
+        var isRight = $("#isRight").is(":checked");
+        var questionId = parseInt('@Model.Id');
+        $.ajax({
+            type: "POST",
+            url: "/Question/AddAnswer",
+            data: {
+                questionId: questionId,
+                text: text,
+                isRight: isRight
+            },
+            success: function() {
+                window.location.href = "/Question/EditQuestion?id=" + '@Model.Id';
+            }
+        });
+    }
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "/User/Logout",
+            success: function() {
+                window.location.href = "/User/Index";
+            }
+        });
+    }
+</script>

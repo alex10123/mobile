@@ -1,0 +1,87 @@
+﻿<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/kendo/2014.1.318/kendo.web.min.js"></script>
+<link href="~/Content/kendo/2014.1.318/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.metro.min.css" rel="stylesheet" />
+
+<h1>Страница пользователя</h1>
+<button onclick="logout()">Выйти</button>
+<div>
+    <h4>Тесты:</h4>
+</div>
+<div id="grid"></div>
+
+<div>
+    <h4>Пройденные тесты:</h4>
+</div>
+<div id="grid2"></div>
+<script>
+    $(document).ready(function() {
+        $("#grid").kendoGrid({
+            dataSource: {
+                dataType: "jsonp",
+                transport: {
+                    read: "/Quiz/GetQuizes"
+                },
+                pageSize: 20
+            },
+            width: 400,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            columns: [
+                { field: "Title", title: "Название теста" },
+                { command: { text: "Пройти тест" }, title: " ", width: "100px" }
+            ],
+            dataBound: onDataBound
+        });
+
+        $("#grid2").kendoGrid({
+            dataSource: {
+                dataType: "jsonp",
+                transport: {
+                    read: "/User/GetUserTests"
+                },
+                pageSize: 20
+            },
+            width: 400,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            columns: [
+                { field: "QuizTitle", title: "Название теста" },
+                { field: "RightAnswers", title: "Правильные ответы" },
+                { field: "TotalAnswers", title: "Всего вопросов" },
+            ],
+            dataBound: onDataBound
+        });
+    });
+
+    function editItem(id) {
+        window.location.href = '/Quiz/DisplayQuiz?id='+id;
+    }
+
+    function onDataBound() {
+        var grid = $('#grid').data('kendoGrid');
+        $(grid.content.find('tr')).each(
+            function (i, item) {
+                $(item).find('a.k-button.k-grid-Пройтитест').on('click', function () {
+                    editItem(grid.dataItem(item).Id);
+                });
+            });
+    }
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "/User/Logout",
+            success: function () {
+                window.location.href = "/User/Index";
+            }
+        });
+    }
+</script>

@@ -1,0 +1,83 @@
+﻿@model MobileQuiz.Models.Quiz
+@{
+    ViewBag.Title = "Quiz";
+}
+
+<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/kendo/2014.1.318/kendo.web.min.js"></script>
+<link href="~/Content/kendo/2014.1.318/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2014.1.318/kendo.metro.min.css" rel="stylesheet" />
+
+<button onclick="logout()">Выйти</button>
+<h2>@Model.Title</h2>
+
+@foreach (var question in Model.Questions) 
+{
+    <div class="questionContainer">
+    <p>@question.Text : <div class="question" id="question-@question.Id" data-id="@question.Id"></div></p>
+    <p><input value="Ответить" onclick="saveAnswer(this)" /></p>
+    </div>
+}
+<input type="submit" value="Закончить тест" onclick="submitQuiz()" />
+<h1><label id="result" /></h1>
+<a href ='/Quiz/ListQuizes/'>На страницу тестов</a>
+
+<script>
+    $(document).ready(function () {
+        $('.question').each(function (i, item) {
+            var id = $(item).data('id');
+            $("#question-"+id).kendoComboBox({
+                dataTextField: "Text",
+                dataValueField: "Id",
+                dataSource: {
+                    transport: {
+                        read: {
+                            dataType: "json",
+                            url: "/Question/GetQuestionAnswers?id=" + id,
+                            type: "POST"
+                        }
+                    }
+                },                
+                index: 0,
+            });
+        });
+    });
+
+    function saveAnswer(self) {
+        var comboboxElement = $($(self).closest("div").find("div.question")[0]);
+        var questionId = comboboxElement.data("id");
+        var answerId = $('#question-' + questionId).data('kendoComboBox').value();
+        $.ajax({
+            type: "POST",
+            url: "/User/SaveAnswer",
+            data: {
+                answerId: answerId,
+                quizId: parseInt('@Model.Id')
+            },
+            success: function () {
+                comboboxElement.closest('.questionContainer').hide();
+            }
+        });
+    }
+
+    function submitQuiz() {
+        $.ajax({
+            type: "POST",
+            url: "/User/GetTestResult",
+            success: function (data) {
+                $('#result').text(data);
+            }
+        });
+    }
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "/User/Logout",
+            success: function () {
+                window.location.href = "/User/Index";
+            }
+        });
+    }
+</script>
